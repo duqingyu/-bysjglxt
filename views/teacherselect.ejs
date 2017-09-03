@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+
+    <style>
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+            caption{
+         text-align:center;
+         padding-bottom:1px;
+         border:1px   #000000;
+         background-color:#EFEFDA;
+         }
+         .textcolor{
+              color: #B45B3E;
+              font-size: 30px;
+         }
+    </style>
+</head>
+
+<body>
+<div id="view">
+     <% include teacherheader.ejs %>
+           
+          <div class="container">
+    <table class="table table-bordered">  
+     <caption><center><b class="textcolor">申请命题</b></center></caption>
+        <thead>  
+            <tr><th>老师姓名</th><th>课题名称</th><th>课题类型</th><th>人数上限</th><th>状态</th><th>申请时间</th><th>点击退出申请</th></tr>  
+        </thead>  
+        <tbody>  
+            <tr class="success" v-for="(value,index) in result">
+            <td>{{value.TeacherName}}</td>
+            <td>{{value.ClassName}}</td>
+            <td>{{value.ClassType}}</td>
+            <td>10</td>
+            <td>{{value.status}}</td>
+            <td>{{value.time}}</td>
+            <td><button type="button" id="tuichu" class="btn btn-success" v-on:click="tuichu(index)">点击退出申请</button></td>
+            </tr>  
+        </tbody>  
+    </table>  
+    </div>
+    <div style="padding: 100px 70px 10px;">
+    <form class="bs-example bs-example-form" role="form">
+        <div class="input-group">
+            <span class="input-group-addon">课题名称</span>
+            <input type="text" class="form-control" placeholder="请输入课题名称" v-model="ClassName">
+        </div>
+        <br>
+        <div class="input-group">
+            <span class="input-group-addon">课题类型</span>
+            <input type="text" class="form-control" placeholder="请输入课题类型" v-model="ClassType">
+        </div>
+    </form>
+    <br>
+     <button type="button" id="tianjia" class="btn btn-success" v-on:click="tianjia">点击添加</button>
+</div>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#view",
+        data: {
+           TeacherName:'',
+           ClassName:'',
+           ClassType:'',
+           PeopleLimit:'',
+           result:[]
+        },
+        mounted: function () {
+             this.getTeacherSelect();
+        },
+        methods: {
+           tianjia:function(){
+              var that = this;
+
+                axios.post('/TeacherSelect', {
+                    'ClassName':this.ClassName,
+                    'ClassType':this.ClassType,
+                })
+                    .then(function (res) {
+                        
+                        if (res.data == -1) {
+                            alert('插入失败!请所有选项都填写完整！');
+                            return;
+                        } else {
+                            console.log(res.data)
+                           that.getTeacherSelect(res.data.ClassName);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+            getTeacherSelect:function(ClassName){
+              var that = this;
+                axios.get(`/getTeacherSelect?ClassName=${ClassName}`)
+                    .then(function (res) {
+                 if(that.ClassName.length>0 && that.ClassType.length>0){
+                       alert('添加成功！');
+                      that.result = res.data.result;
+                      that.ClassName = "";
+                      that.ClassType = "";
+                      return;
+                      }
+                      else
+                      {
+                           that.result = res.data.result;
+                      }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+tuichu:function(index){
+              var that = this;
+                var time = that.result[index].time;
+                var status = that.result[index].status;
+                if (status == "审核通过"){
+                            alert('退出申请失败，您已经被审核通过。请与管理员联系！');
+                            return;
+                            }
+               else {
+                     axios.get(`/tuichuTeacherSelect?time=${time}`)
+                     .then(function (res) {
+               
+                            alert('退出申请成功!');
+                             window.location = '/toteacherSelect';
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+                    }
+           },
+
+        }
+
+    })
+
+
+</script>
+
+
+
+</body>
+</html>

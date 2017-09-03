@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+       <style>
+        body{
+            padding:0;
+            background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+        caption{
+         text-align:center;
+         padding-bottom:10px;
+         border:1px   #000000;
+         background-color:#EFEFDA;
+         }
+         .textcolor{
+              color: #B45B3E;
+              font-size: 20px;
+         }
+         .textcolor1{
+              color: #B45B3E;
+              font-size: 25px;
+         }
+    </style>
+</head>
+<body>  
+<div id="views">
+<% include studentheader.ejs %>
+<div class="container">
+ <table class="table table-bordered">  
+     <caption><center><span class="textcolor1"><b>选题信息</b></span></center></caption>
+        <thead>  
+            <tr><th>ID</th><th>课题名称</th><th>课程类型</th><th>人数上限</th><th>题目发布时间</th><th>选择老师第一志愿</th><th>选择老师第二志愿</th><th>选择老师第三志愿</th><th>点击确认选题</th></tr>  
+        </thead>  
+        <tbody>  
+            <tr class="success" v-for="(value,index) in result">
+            <td>{{index+1}}</td>
+            <td>{{value.ClassName}}</td>
+            <td>{{value.ClassType}}</td>
+            <td>10</td>
+            <td>{{value.time}}</td>
+            <td>
+                 <select v-model="Select1" >
+                  <option v-for="(value,index) in result2">
+                    {{value.username}}
+                  </option>
+                 </select>
+            </td>
+            <td>
+                 <select v-model="Select2" >
+                  <option v-for="(value,index) in result2">
+                    {{value.username}}
+                  </option>
+                 </select>
+            </td>
+            <td>
+                 <select v-model="Select3" >
+                  <option v-for="(value,index) in result2">
+                    {{value.username}}
+                  </option>
+                 </select>
+            </td>
+            <td><button type="button" id="confirm" class="btn btn-success" v-on:click="queren(index)">点击确认选题</button></td>
+            </tr>  
+        </tbody>  
+    </table>  
+
+
+    <br><br>
+  <table class="table table-bordered">
+<caption><span class="textcolor"><b>选题情况</b></span></caption>
+  <thead>
+    <tr>
+      <th>课程名称</th>
+      <th>课程类型</th>
+      <th>确认时间</th>
+      <th>状态</th>
+      <th>第一志愿</th>
+      <th>第二志愿</th>
+      <th>第三志愿</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="success"  v-for="(value,index) in result1">
+      <td>{{value.ClassName}}</td>
+      <td>{{value.ClassType}}</td>
+      <td>{{value.time1}}</td>
+      <td>{{value.status}}</td>
+      <td>{{value.第一志愿}}</td>
+      <td>{{value.第二志愿}}</td>
+      <td>{{value.第三志愿}}</td>
+      </tr>
+  </tbody>
+</table> 
+<br><br><br>
+  <table class="table">
+<caption><center><span class="textcolor"><b>最终选题结果</b></span></center></caption>
+  <thead>
+    <tr>
+      <th>老师姓名</th>
+      <th>课程名称</th>
+      <th>课程类型</th> 
+      <th>确认时间</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="danger"  v-for="(value,index) in result4">
+      <td>{{value.TeacherName}}</td>
+      <td>{{value.ClassName}}</td>
+      <td>{{value.ClassType}}</td>
+      <td>{{value.time}}</td>
+      </tr>
+  </tbody>
+</table> 
+</div>
+    </div>
+    <script>
+    var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+          result1:[],
+          result2:[],
+          result4:[],
+          TeacherName:"",
+          ClassName:"",
+          ClassType:"",
+          Volunteer:"",
+          time:"",
+          Select1:"",
+          Select2:"",
+          Select3:"",
+        },
+        mounted: function () {
+             this.getTeacherSelect();
+             this.getStudentSelect();
+             this.getTeacherName();
+             this.LastStudent();
+        },
+        methods: {
+                  getTeacherName:function(){
+              var that = this;
+                axios.get(`/getTeacherName`)
+                    .then(function (res) {
+                           that.result2 = res.data.result;    
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+                 getTeacherSelect:function(){
+              var that = this;
+                axios.get(`/studentGetTeacherSelect`)
+                    .then(function (res) {
+                           that.result = res.data.result;    
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+            queren:function(index){
+              var that = this;
+               that.TeacherName = that.result[index].TeacherName;
+               that.ClassName = that.result[index].ClassName;
+               that.ClassType = that.result[index].ClassType;
+               that.time = that.result[index].time;
+               that.Volunteer1 = that.Select1;
+               that.Volunteer2 = that.Select2;
+               that.Volunteer3 = that.Select3;
+               if(that.result1.length>=1){
+                   alert('您最多能选择一个毕业设计题目！');
+               }
+              else{
+                  axios.post('/StudentSelect', {
+                    'TeacherName':this.TeacherName,
+                    'ClassName':this.ClassName,
+                    'ClassType':this.ClassType,
+                    'Volunteer1':this.Volunteer1,
+                    'Volunteer2':this.Volunteer2,
+                    'Volunteer3':this.Volunteer3,
+                    'time':this.time,
+                })
+                    .then(function (res) {
+                         if (res.data == -1) {
+                            alert('选择失败！');
+                            return;
+                        } 
+                        else {
+                            alert('选择成功!');
+                            var time = that.result[index].time;
+                           that.getStudentSelect();
+                                           axios.get(`/delTeacherTitle?time=${time}`)
+                                          .then(function (res) {
+                                          that.result = res.data.result;
+                                            }) .catch(function (err) {
+                                              console.log(err);
+                                                });
+                                   window.location = '/tostudentSelect';
+                            }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+              }
+                     
+           },
+getStudentSelect:function(){
+              var that = this;
+                axios.get(`/getStudentSelect`)
+                    .then(function (res) {
+                           // res.data.result.splice(3);
+                                that.result1 = res.data.result;
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+                     LastStudent:function(){
+                    var that = this;
+                axios.get(`/studentLast`)
+                    .then(function (res) {
+                           // res.data.result.splice(3);
+                                that.result4 = res.data.result;
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+
+        },
+
+    })
+
+
+</script>
+
+</body>
+</html>

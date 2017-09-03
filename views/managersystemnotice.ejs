@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+
+   
+    
+
+    <style type="text/css">
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+   }
+#all{
+    width:500px;
+    height:400px;
+    margin-left:220px;
+    margin-top:110px;
+}
+#all .title{
+    font-family:"微软雅黑";
+    font-size:24px;
+    padding-left:20px;
+}
+#all .content{
+    line-height:25px;
+    margin:10px 5px;
+    font-family:"微软雅黑";
+    font-size:16px;
+}
+hr{
+    width:477px;
+    height:5px;
+    background-color:#006600;
+    float:right;
+    margin:15px 0;
+}
+
+
+</style>
+</head>
+<body>
+    <% include managerheader.ejs %>
+    <br><br>
+    <div id="views">
+    <div id="all">
+      <div class="title">通知公告</div>
+     <hr />
+   <div class="content">
+        <ul class="danger"  v-for="(value,index) in result">
+           <li>{{value.Notice}}</li>
+           <button type="button" id="shanchu" class="btn btn-success" v-on:click="shanchu(index)" v-show='flag'>点击删除</button>
+        </ul>
+    </div>
+    <br>
+    <textarea type="text" class="form-control" placeholder="请输入公告内容" v-model="Notice"></textarea>
+     <br>
+         <button type="button" id="confirm" class="btn btn-success" v-on:click="fabu()">点击发布</button>
+         <button type="button" id="xianshi" class="btn btn-success" v-on:click="xianshi()">点击删除</button>
+  </div>
+    </div>
+      <script>
+    var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+          Notice:"",
+          flag:false,
+          id:""
+        },
+        mounted: function () {
+         this.LastNotice();
+        },
+
+        methods: {
+
+              xianshi:function(){
+               var that = this;
+             if(that.flag == false){
+                 that.flag = true;
+             }
+             else if (that.flag == true){
+                 that.flag = false;
+             }
+           },
+                  fabu:function(){
+              var that = this;
+              if(that.Notice == ""){
+                  alert('请输入公告内容！');
+                  return;
+              }
+                else{
+                     that.id = (that.result.length)+1;
+              
+                    axios.post(`/managerinsertNotice`,{
+                 'Notice':this.Notice,
+                 'id':this.id
+                })
+                    .then(function (res) {
+                        if(res.data == 1){
+                            alert('发布成功！');  
+                             window.location = '/tomanagersystemnotice';
+                        }         
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+                }
+           },
+            LastNotice:function(){
+                
+              var that = this;
+                axios.get(`/LastNotice`)
+                    .then(function (res) {  
+                           that.result = res.data.result; 
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+
+     shanchu:function(index){
+              var that = this;
+              var Notice = that.result[index].Notice;
+                axios.get(`/delgonggao?Notice=${Notice}`)
+                    .then(function (res) {  
+                          if(res.data == 1){
+                              alert('删除成功！');
+                               window.location = '/tomanagersystemnotice';
+                          }
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+
+           
+
+}
+
+    })
+
+
+</script>
+</body>
+</html>

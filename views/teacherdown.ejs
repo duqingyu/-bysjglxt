@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+
+    <style>
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+            caption{
+         text-align:center;
+         padding-bottom:1px;
+         border:1px   #000000;
+         background-color:#EFEFDA;
+         }
+         .textcolor{
+              color: #B45B3E;
+              font-size: 30px;
+         }
+    </style>
+</head>
+
+<body>
+<div id="view">
+    <% include teacherheader.ejs %>
+    <div class="container">
+      <table class="table table-bordered">
+<caption><span class="textcolor"><b>文件下载</b></span></caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>文件名称</th>
+      <th>学生名字</th>
+      <th>上传时间</th>
+      <th>点击下载文件</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="success"  v-for="(value,index) in result">
+      <td>{{index+1}}</td>
+      <td><a href="">{{value.path}}</a></td>
+      <td>{{value.StudentName}}</td>
+      <td>{{value.time}}</td>
+      <td><button type="button" id="xiazai" class="btn btn-success" v-on:click="xiazai(index)">点击下载文件</button></td>
+      </tr>
+  </tbody>
+</table> 
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#view",
+        data: {
+            result:[]
+        },
+        mounted: function () {
+        this.down();
+        },
+        methods: {
+                    down:function (){
+                      var that = this;
+                axios.get(`/showdown1`)
+                    .then(function (res) {
+
+                           that.result = res.data.result;    
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+            xiazai:function(index){
+                           var that = this;
+                           var filename = that.result[index].path;
+                       axios.get(`/todown?filename=${filename}`)
+                    .then(function (res) {
+
+                        
+                           window.location = '/todown?filename='+filename;
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            },
+        }
+
+    })
+
+
+</script>
+</body>
+</html>

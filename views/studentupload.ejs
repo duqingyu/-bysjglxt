@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/favicon.ico">
+  <script src="/js/vue.js"></script>
+  <title>华软毕业设计管理系统</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- Custom styles for this template -->
+  <link href="/css/jumbotron.css" rel="stylesheet">
+  <style>
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-repeat: no-repeat;
+            margin:0
+        }
+            caption{
+         text-align:center;
+         padding-bottom:1px;
+         border:1px   #000000;
+         background-color:#EFEFDA;
+         }
+         .textcolor{
+              color: #B45B3E;
+              font-size: 17px;
+         }
+         .textcolor1{
+              color: #B45B3E;
+              font-size: 25px;
+         }
+         .div1{
+            text-align:center;
+           padding-bottom:1px;
+            border:1px   #000000;
+            background-color:#EFEFDA;
+         }
+  </style>
+
+</head>
+
+<body>
+  <% include studentheader.ejs %>
+  <div id="view">
+<div class="container">
+<table class="table table-bordered">
+<caption><span class="textcolor1"><b>老师通知</b></span></caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>老师上传指导内容</th>
+      <th>指导发布时间</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="danger"  v-for="(value,index) in result1">
+      <td>{{index+1}}</td>
+      <td>{{value.Notice1}}</td>
+      <td>{{value.time}}</td>
+      </tr>
+  </tbody>
+</table> 
+  <!-- Example row of columns -->
+  <div id="div1" class="div1"><center><h1 class="textcolor"><b>上传作品</b></h1></center></div>
+  <form action="/StudentUpload" method="post"  enctype="multipart/form-data" >
+      <input type="text" name="studentname" class="form-control" id="studentname" placeholder="请输入姓名"><br>
+      <input type="text" name="studentnumber" class="form-control" id="studentnumber" placeholder="请输入学号"><br>
+      <input type="text" name="cishu" class="form-control" id="cishu" placeholder="请输入第几次作品"><br>
+       <input type="text" name="teacher" class="form-control" id="teacher" placeholder="请输入指导老师名字"><br>
+      <label for="exampleInputFile">File input</label>
+      <input type="file"  id="zuopin" name="zuopin">
+      <p class="help-block">Example block-level help text here.</p>
+    <button type="submit" class="btn btn-success">上传作品</button>
+  </form>
+ <br><br>
+  <table class="table table-bordered">
+<caption><span class="textcolor"><b>上传的文件</b></span></caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>文件名称</th>
+      <th>上传时间</th>
+      <th>指导老师</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="success"  v-for="(value,index) in result">
+      <td>{{index+1}}</td>
+      <td><a href="">{{value.path}}</a></td>
+      <td>{{value.time}}</td>
+      <td>{{value.TeacherName}}</td>
+      </tr>
+  </tbody>
+</table> 
+  </div>
+</div> <!-- /container -->
+</div>
+  </div>
+<script>
+    var vm = new Vue({
+        el: "#view",
+        data: {
+            result:[],
+            result1:[]
+        },
+        mounted: function () {
+           this.down();
+           this.LastNotice1();
+        },
+        methods: {
+           down:function (){
+                      var that = this;
+                axios.get(`/showdown`)
+                    .then(function (res) {
+                           that.result = res.data.result;    
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+            LastNotice1:function(){
+                
+              var that = this;
+                axios.get(`/Studenttoupfile`)
+                    .then(function (res) {  
+                           that.result1 = res.data.result; 
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+           
+        },
+
+    })
+
+
+</script>
+</body>
+</html>

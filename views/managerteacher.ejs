@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+<style type="text/css">
+body{   
+ padding:0;
+  margin:0
+}
+#h3{
+
+color: #606060; 
+border: solid 1px #b7b7b7; 
+background: #fff; 
+background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed)); 
+background: -moz-linear-gradient(top, #fff, #ededed); 
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+font-size:40px;
+}
+#u{
+height:760px;
+position:relative;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+float:left;
+width:30%
+} 
+span:hover{text-decoration:underline;}
+span{font-size:20px;  font-family: "Times New Roman", Times, serif;}
+#myd{
+    border-bottom:#000  1px dashed; height:30px;
+    height:700px;
+    min-height: 100px;
+    width: 100%;
+    padding: 10px;
+    position:relative;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    overflow: auto
+}
+</style>  
+</head>   
+
+<body>
+  <% include managerheader.ejs %>
+  <div id="u"align=center;>
+    <div id="div1" class="div1"><center><h1 class="textcolor"><b>上传表格</b></h1></center></div>
+  <center><form action="/tmanagerUpload" method="post"  enctype="multipart/form-data" >
+    <div class="form-group">
+      <label for="exampleInputFile">File input</label>
+      <input type="file"  id="managerteacher" name="managerteacher">
+      <p class="help-block">Example block-level help text here.</p>
+    </div>
+    <button type="submit" class="btn btn-success">上传文件</button>
+    <button type="button" class="btn btn-success"><a href="tdownload">下载文件</a></button>
+  </form></center>
+  </div>
+
+  <div style="float:right; width:70%; align=center;">
+<div id="h3" align=center>老师表</div>
+<div id="myd" align=center>
+<%for(var i =0; i<excel.length;i++) {%>
+    <span><%=excel[i]%></span>
+    <%if(excel[i]==";"){%>        
+         <br>
+    <%}%>
+<%}%>
+</div>
+</body>  
+</html> 

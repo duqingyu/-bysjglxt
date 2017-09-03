@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+<style type="text/css">  
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+               caption{
+         text-align:center;
+         padding-bottom:1px;
+         border:1px   #000000;
+         background-color:#EFEFDA;
+         }
+         .textcolor{
+              color: #B45B3E;
+              font-size: 35px;
+         }
+</style>  
+</head>  
+<body>  
+<% include managerheader.ejs %>
+<div id="views">
+    <div class="container">
+<table class="table table-bordered">
+    <caption><span class="textcolor"><b>最终分配情况</b></span></caption>
+  <thead>
+    <tr>
+      <th>序号</th>
+      <th>指导老师</th>
+      <th>学生姓名</th>
+      <th>课程名称</th>
+      <th>课程类型</th>
+      <th>确认时间</th>
+      <th>点击重新分配</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr class="success"  v-for="(value,index) in result">
+      <td>{{index+1}}</td>
+      <td>{{value.Volunteer}}</td>
+      <td>{{value.StudentName}}</td>
+      <td>{{value.ClassName}}</td>
+      <td>{{value.ClassType}}</td>
+      <td>{{value.time}}</td>
+      <td><button type="button" id="chongxin" class="btn btn-success" v-on:click="chongxin(index)">点击重新分配</button></td>
+      </tr>
+  </tbody>
+</table> 
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+          test:[]
+        },
+        mounted: function () {
+         this.Last();
+        },
+        methods: {
+           Last:function (){
+               var that = this;
+               var count = 0 ;
+               var temp = "";
+                axios.get(`/managerLast`)
+                    .then(function (res) {
+                           // res.data.result.splice(3);
+                                that.result = res.data.result;
+                        
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+
+          
+
+           } ,
+                chongxin:function (index){
+               var that = this;
+               var TeacherName = that.result[index].TeacherName;
+               var StudentName = that.result[index].StudentName;
+               var time = that.result[index].time;
+                axios.get(`/managerLastAgain?TeacherName=${TeacherName}&StudentName=${StudentName}&time=${time}`)
+                    .then(function (res) {
+                           // res.data.result.splice(3);
+                            if(res.data == 1){
+                                alert('重新分配成功！');
+                                 window.location = '/tomanagerLast';
+                            }
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           } ,
+        },
+    })
+</script>
+</body>
+</html>

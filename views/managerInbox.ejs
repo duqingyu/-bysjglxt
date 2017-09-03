@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+       <style>
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+    </style>
+     <style type="text/css">
+#all{
+    width:500px;
+    height:400px;
+    margin-left:220px;
+    margin-top:110px;
+}
+#all .title{
+    font-family:"微软雅黑";
+    font-size:24px;
+    padding-left:20px;
+}
+hr{
+    width:477px;
+    height:5px;
+    background-color:#006600;
+    float:right;
+    margin:15px 0;
+}
+#all li{
+    line-height:25px;
+    margin:10px 5px;
+    font-family:"微软雅黑";
+    font-size:16px;
+}
+.class1{
+    color:green;
+}
+</style>
+</head>
+<body>
+<% include managerheader.ejs %>
+<div id="all">
+<div class="title">管理员收件箱</div>
+<hr />
+ <div id="views">
+ <div class="content">
+        <ul class="danger"  v-for="(value,index) in result">
+            <li>
+                <span class="class1">发送人：</span >{{value.getemName}}
+            <p><span class="class1">发送人学号：</span>{{value.getemNumber}}
+            <p><span class="class1">邮件内容：</span>{{value.getemContent}}
+            <p><span class="class1">发送时间：</span>{{value.time}}
+            <br><br><br>
+            </li>
+        </ul>
+    </div>
+</div>
+    </div>
+    </div>
+<script>
+     var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+        },
+        mounted: function () {
+          this.getemNumber();
+        },
+        methods: {
+              getemNumber:function(){
+                    
+             var that = this;
+                axios.get(`/getemdata`)
+                    .then(function (res) {
+                      that.result = res.data.result;
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+
+
+              }
+}
+
+    })
+
+
+</script>
+</body>
+</html>

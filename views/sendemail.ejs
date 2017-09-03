@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+       <style>
+        body{
+            padding:0;
+            background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-repeat: no-repeat;
+            margin:0
+        }
+    </style>
+    <style>
+.send-email {
+margin-left:auto;
+margin-right:auto;
+max-width: 500px;
+background: #D2E9FF;
+padding: 20px 20px 20px 20px;
+font: 12px Arial, Helvetica, sans-serif;
+color: #666;
+}
+.send-email h1 {
+font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+padding: 10px 10px 10px 20px;
+display: block;
+background: #C0E1FF;
+border-bottom: 1px solid #B8DDFF;
+margin: -20px -20px 15px;
+}
+.send-email h1>span {
+display: block;
+font-size: 11px;
+}
+.send-email label>span {
+float: left;
+margin-top: 10px;
+color: #5E5E5E;
+}
+.send-email label {
+display: block;
+margin: 0px 0px 5px;
+}
+.send-email label>span {
+float: left;
+width: 20%;
+text-align: right;
+padding-right: 15px;
+margin-top: 10px;
+font-weight: bold;
+}
+.send-email input[type="text"], .send-email input[type="student-number"], .send-email textarea, .send-email select {
+color: #888;
+width: 70%;
+padding: 0px 0px 0px 5px;
+border: 1px solid #C5E2FF;
+background: #FBFBFB;
+outline: 0;
+-webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+box-shadow: inset 0px 1px 6px #ECF3F5;
+font: 200 12px/25px Arial, Helvetica, sans-serif;
+height: 30px;
+line-height:15px;
+margin: 2px 6px 16px 0px;
+}
+.send-email textarea{
+height:100px;
+padding: 5px 0px 0px 5px;
+width: 70%;
+}
+.send-email select {
+background: #fbfbfb  no-repeat right;
+background: #fbfbfb  no-repeat right;
+appearance:none;
+-webkit-appearance:none;
+-moz-appearance: none;
+text-indent: 0.01px;
+text-overflow: '';
+width: 70%;
+}
+</style>
+</head>
+<% include studentheader.ejs %>
+<div id="views">
+    <br><br>
+<form action="" method="post" class="send-email">
+<h1>毕业设计管理系统邮件
+<span>邮件发送</span>
+</h1>
+<label>
+<span>你的名字 :</span>
+<input id="name" type="text" name="name" placeholder="请输入名字"  v-model="emName"/>
+</label>
+<label>
+<span>你的学号 :</span>
+<input id="student-number" type="student-number" name="student-number" placeholder="请输入学号" v-model="emNumber" />
+</label>
+<label>
+<span>内容 :</span>
+<textarea id="message" name="message" placeholder="请输入内容" v-model="emContent"></textarea>
+</label>
+<label>
+<span>发送给 :</span><select name="selection">
+<option value="管理员">管理员</option>
+</select>
+</label>
+<label>
+<span>&nbsp;</span>
+<button type="button" id="confirm" class="btn btn-success" v-on:click="fasong()">发送邮件</button>
+</label>
+</form>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+          emNumber:"",
+          emName:"",
+          emContent:"",
+        },
+        mounted: function () {
+        },
+        methods: {
+                  fasong:function(){
+                  alert('发送邮件成功！');
+              var that = this;
+                axios.post(`/fasong`,{
+                 'emNumber':this.emNumber,
+                 'emName':this.emName,
+                 'emContent':this.emContent,
+                 "emstatus":"发送成功",
+                })
+                    .then(function (res) {
+                           that.result = res.data.result;
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+           },
+}
+
+    })
+
+
+</script>

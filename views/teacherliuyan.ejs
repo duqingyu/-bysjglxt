@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+  
+      <style>
+        body{
+            padding:0;
+             background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+        #x{
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="view">
+
+    <% include teacherheader.ejs %>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+         <div class="jumbotron" style="opacity:0;">  </div>
+            <!-- 登陆之后，显示发言框-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <a href="/avator"><img class="avatar" src="/avator/<%= avator %>" alt=""/></a>
+                    </div>
+                    <div class="col-lg-6 col-lg-offset-1">
+                        <p id="x"><%= username %></p>
+                        <textarea v-model="pinglun" name="content" id="content" cols="80" rows="8"></textarea>
+                        <button type="button" id="fabiao" class="btn btn-success" v-on:click="pinlun">发表留言</button>
+            </div>
+        </div>
+    </div>
+    <ul class="pagination">
+
+        <ul class="pagination">
+            <li v-for="i in count" class="yemaanniu"> <a @click="getData(i)" href="javascript:;">{{i}}</a></li>
+
+        </ul>
+
+    </ul>
+    <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-md-4" v-for="(value,index) in result">
+               <h2> <img width="40" :src="value.avator" alt="">
+                   {{value.username}}说：</h2>
+                <p>【留言】{{value.pinglun}}</p>
+                <p>【时间】{{value.time}}</p>
+                <p><a class="btn btn-default" href="#" role="button">查看留言 &raquo;</a></p>
+            </div>
+
+        </div>
+
+        <hr>
+
+    
+    </div> <!-- /container -->
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+<script>
+    var vm = new Vue({
+        el: "#view",
+        data: {
+            result: [],
+            username: '',
+            password: '',
+            pinglun: '',
+            count:''
+
+        },
+        mounted: function () {
+            this.Allcount();
+            this.getData(1);
+        },
+        methods: {
+            pinlun: function () {
+                var that = this;
+
+                axios.post('/insertpinglun', {
+                    'pinglun': this.pinglun,
+                })
+                    .then(function (res) {
+                        if (res == -1) {
+                            alert('插入失败');
+                        } else {
+                            that.getData(1);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            },
+            Allcount: function () {
+                var that = this;
+
+                axios.get('/Allcount')
+                    .then(function (res) {
+                        var count = parseInt(res.data);
+                        that.count = Math.ceil(count/12)
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            },
+            getData: function (page) {
+                var that = this;
+                console.log(page);
+
+                axios.get('/neirong?page=' + page)
+                    .then(function (response) {
+                        function iterator(i) {
+                            if (i == response.data.result.length) {
+                                return
+                            }
+                            var use = response.data.result[i].username
+                                axios.get(`/users?use=${use}`).then(function (res) {
+                                    that.result[i].avator = '/avator/'+res.data.avator;
+                                    that.$set(that.result[i],4,'/avatar/'+res.data.avator);
+                                    iterator(i+1);
+                                }).catch(function (error) {
+                                    console.log(error);
+                                });
+
+
+                        }
+
+                        iterator(0)
+                        that.result = response.data.result;
+
+            })
+
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+        }
+
+    })
+
+
+</script>
+</body>
+</html>

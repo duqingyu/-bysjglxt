@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/js/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>华软毕业设计管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron.css" rel="stylesheet">
+       <style>
+        body{
+            padding:0;
+            background-image: url("/avator/1.jpg");
+            background-size: 100%,100%;
+            background-attachment:fixed;
+            background-repeat: no-repeat;
+            margin:0
+        }
+    
+    </style>
+</head>
+<body>
+    <% include studentheader.ejs %>
+    <br><br><br><br><br>
+    <div id="views">
+<table  border=5  bordercolor=green align=center class="danger"  v-for="(value,index) in result">
+<tr height=70 bgcolor=white align='center'>
+<td width=720 colspan=6 align=center
+><font size=5 ><b>个人信息</b></font></td>
+</tr>
+<tr height=50 bgcolor=white>
+<td width=110 align=center
+><font size=5>学号：</td>
+<td id="1" width=150 align=center
+><font size=5>{{value.getNumber}}</td>
+<td width=110 align=center
+><font size=5>姓名：</td>
+<td width=150 align=center
+><font size=5>{{value.getName}}</td>
+<td width=200 colspan=2 rowspan=4><img src="/avator/<%= avator %>" width=249 height=253></td>
+ </tr>
+<tr height=50 bgcolor=white>
+<td width=110 align=center
+><font size=5 align=center
+>学校：</td>
+<td width=150 align=center
+><font size=4>{{value.getSchool}}</td>
+<td width=110 align=center
+><font size=5>系别：</td>
+<td width=150 align=center
+><font size=5>{{value.getLevel}}</td>
+</tr>
+<tr height=50 bgcolor=white>
+<td width=110 align=center
+><font size=5>专业：</td>
+<td width=150 align=center
+><font size=5>{{value.getMajor}}</td>
+<td width=110 align=center
+><font size=5>班级：</td>
+<td width=150 align=center
+><font size=4>{{value.getClass}}</td>
+</tr>
+<tr height=50 bgcolor=white>
+<td width=110 align=center
+><font size=5>年级：</td>
+<td width=150 align=center
+><font size=4>{{value.getDiplomas}}</td>
+<td width=110 align=center
+><font size=4>联系电话：</td>
+<td width=150 align=center
+><font size=3>{{value.getPhonenumber}}</td>
+</tr>
+<tr height=50 bgcolor=white>
+<td width=100 align=center
+></td>
+<td width=620 colspan=5 align=center
+></td>
+</tr>
+<tr height=50 bgcolor=white>
+<td width=110 align=center
+></td>
+<td width=610 colspan=5 align=center
+><button type="button" id="confirm" class="btn btn-success" v-on:click="xiugai()">修改个人信息</button></td>
+</tr>
+</table>
+    </div>
+    <script>
+    var vm = new Vue({
+        el: "#views",
+        data: {
+          result:[],
+        },
+        mounted: function () {
+            this.getstudentdata();
+        },
+        methods: {
+          getstudentdata:function (){
+                      var that = this;
+                axios.get(`/getstudentdata`)
+                    .then(function (res) {
+                      that.result = res.data.result;
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+
+          },
+
+                    xiugai:function (){
+                   
+                   window.location = '/tostudentdata';
+
+          },
+           
+}
+
+    })
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/favicon.ico">
+  <script src="/js/vue.js"></script>
+  <title>华软毕业设计管理系统</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- Custom styles for this template -->
+  <link href="/css/jumbotron.css" rel="stylesheet">
+  <style>
+
+  </style>
+
+</head>
+
+<body>
+<div class="container">
+  <!-- Example row of columns -->
+  <h1><b>上传头像</b></h1>
+  <form action="/doavator" method="post"  enctype="multipart/form-data" >
+    <div class="form-group">
+      <label for="exampleInputFile">File input</label>
+      <input type="file"  id="touxiang" name="touxiang" >
+      <p class="help-block">请选择您的头像.</p>
+    </div>
+    <button type="submit" class="btn btn-success" @click="fasong">上传头像</button>
+  </form>
+  <div class="col-md-4">
+
+  </div>
+
+
+  <footer>
+    <p></p>
+  </footer>
+</div> <!-- /container -->
+</body>
+</html>
